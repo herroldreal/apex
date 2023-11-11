@@ -20,7 +20,7 @@ Rick and Morty demonstrates modern Android development with Koin, Coroutines, Fl
 - [Coil](https://github.com/coil-kt/coil) - An image loading library for Android backed by Kotlin Coroutines.
 
 # Demo
-
+![Demo](https://media3.giphy.com/media/GpHUnLsnDrCVEptUuI/giphy.gif)
 ![Demo](https://media3.giphy.com/media/GpHUnLsnDrCVEptUuI/giphy.gif)
 
 ## Open API
