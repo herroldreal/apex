@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google()
@@ -14,4 +16,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ApexTest"
+
 include(":app")
+include(":data")
+include(":domain")
+include(":localSource")
+include(":remoteSource")
