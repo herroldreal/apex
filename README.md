@@ -20,7 +20,7 @@ Rick and Morty demonstrates modern Android development with Koin, Coroutines, Fl
 - [Coil](https://github.com/coil-kt/coil) - An image loading library for Android backed by Kotlin Coroutines.
 
 # Demo
-![Demo1](https://giphy.com/embed/GpHUnLsnDrCVEptUuI)
+[Demo](https://giphy.com/embed/GpHUnLsnDrCVEptUuI)
 
 ## Open API
 
@@ -32,4 +32,4 @@ I have developed an application based on the Clean Architecture, where I have se
 
 To work with Jetpack Compose, I have chosen to adopt an architecture based on 'Screen-Route-Coordinator.' This approach, which I have been exploring recently, effectively decouples view components, making them more usable and easy to test. I am attaching the documentation that served as the foundation for this approach.
 
-![Link to the documentation](https://levinzonr.github.io/compose-ui-arch-docs/)
+[Link to the documentation](https://levinzonr.github.io/compose-ui-arch-docs/)
