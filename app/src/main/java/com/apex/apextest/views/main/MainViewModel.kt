@@ -24,7 +24,7 @@ class MainViewModel(
                 _stateFlow.update { MainState.Loading }
                 val characters = fetchAllCharactersUseCase.execute(null)
                     .cachedIn(viewModelScope)
-                _stateFlow.update { MainState.Sucess(characters) }
+                _stateFlow.update { MainState.Success(characters) }
             },
             exceptionHandler = {
                 _stateFlow.update { state -> MainState.Error(it.message ?: "Error") }
@@ -32,7 +32,7 @@ class MainViewModel(
         )
     }
 
-    fun showCharacterDetail(characterId: Int) {
+    fun showCharacterDetail(characterId: Int?) {
         executeUseCase(
             action = {
                 _stateFlow.update { MainState.Loading }

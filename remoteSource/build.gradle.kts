@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     id(libs.plugins.ksp.get().pluginId)
+    id(libs.plugins.realm.get().pluginId)
 }
 
 android {
@@ -44,9 +45,12 @@ dependencies {
     implementation(libs.koin.android)
 
     // Room
-    implementation(libs.androidx.room)
+/*    implementation(libs.androidx.room)
     implementation(libs.androidx.room.coroutines)
-    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.room.paging)*/
+
+    // Realm
+    implementation(libs.realm.base)
 
     // Paging
     implementation(libs.androidx.paging.compose)

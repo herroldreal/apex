@@ -92,11 +92,15 @@ dependencies {
 
     // Pagination
     implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
 
     // Room
-    implementation(libs.androidx.room)
+   /* implementation(libs.androidx.room)
     implementation(libs.androidx.room.coroutines)
     implementation(libs.androidx.room.paging)
+*/
+    // Realm
+    implementation(libs.realm.base)
 
     // Koin
     implementation(libs.koin.compose)

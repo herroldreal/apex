@@ -1,7 +1,7 @@
 package com.apex.domain.models
 
 data class CharacterBO(
-    val id: Int? = null,
+    val characterId: Int? = null,
     val name: String? = null,
     val status: String? = null,
     val species: String? = null,

@@ -45,14 +45,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import coil.compose.rememberImagePainter
-import coil.size.Scale
+import coil.compose.rememberAsyncImagePainter
 import com.apex.apextest.extensions.toast
 import com.apex.domain.models.CharacterBO
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,7 +74,7 @@ fun MainScreen(
             }
         }
 
-        is MainState.Sucess -> {
+        is MainState.Success -> {
             Scaffold(
                 containerColor = MaterialTheme.colorScheme.background,
                 topBar = {
@@ -103,7 +103,7 @@ fun MainScreen(
                     )
                 },
                 content = { padding ->
-                    val pagingData = state.characters.collectAsLazyPagingItems()
+                    val pagingData = state.characters
                     LazyCharactersList(padding, pagingData, actions)
                 }
             )
@@ -118,10 +118,12 @@ fun MainScreen(
 @Composable
 fun LazyCharactersList(
     paddingValues: PaddingValues,
-    characters: LazyPagingItems<CharacterBO>,
+    characters: Flow<PagingData<CharacterBO>>,
     actions: MainActions
 ) {
-    when (characters.loadState.refresh) {
+    val lazyPagingItems = characters.collectAsLazyPagingItems()
+
+    when (lazyPagingItems.loadState.refresh) {
         LoadState.Loading -> {
             Box(
                 modifier = Modifier
@@ -152,11 +154,11 @@ fun LazyCharactersList(
                 contentPadding = paddingValues,
                 content = {
                     items(
-                        count = characters.itemCount,
-                        key = characters.itemKey { it.id ?: 0 },
-                        contentType = characters.itemContentType { "Characters" },
+                        count = lazyPagingItems.itemCount,
+                        key = lazyPagingItems.itemKey { it.characterId ?: 0 },
+                        contentType = lazyPagingItems.itemContentType { "Characters ${it.characterId}" },
                     ) { index: Int ->
-                        val character: CharacterBO = characters[index] ?: return@items
+                        val character: CharacterBO = lazyPagingItems[index] ?: return@items
                         CharacterItem(character, actions)
                     }
                 }
@@ -187,7 +189,7 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
                 .height(IntrinsicSize.Max)
                 .fillMaxWidth()
                 .clickable {
-                    actions.toCharacterDetail(character.id.toString())
+                    actions.toCharacterDetail(character.characterId)
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -196,11 +198,10 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
                     modifier = Modifier
                         .padding(end = 4.dp)
                         .width(120.dp),
-                    painter = rememberImagePainter(
-                        data = character.image, builder = {
-                            crossfade(true)
-                            scale(Scale.FILL)
-                        }),
+                    painter = rememberAsyncImagePainter(
+                        model = character.image,
+                        contentScale = ContentScale.Fit
+                    ),
                     contentDescription = null,
                     contentScale = ContentScale.Fit
                 )
@@ -222,7 +223,8 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
                 Spacer(modifier = Modifier.height(4.dp))
                 character.species?.let {
                     Text(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(end = 4.dp),
                         textAlign = TextAlign.End,
                         text = "Specie: ${it}",
@@ -233,7 +235,8 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
                 Spacer(modifier = Modifier.height(4.dp))
                 character.type?.let {
                     Text(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(end = 4.dp),
                         textAlign = TextAlign.End,
                         text = "Type: ${it}",
@@ -244,7 +247,8 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
                 Spacer(modifier = Modifier.height(4.dp))
                 character.gender?.let {
                     Text(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(end = 4.dp),
                         textAlign = TextAlign.End,
                         text = "Gender: ${it}",
@@ -255,7 +259,8 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
                 Spacer(modifier = Modifier.height(4.dp))
                 character.status?.let {
                     Text(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(end = 4.dp),
                         textAlign = TextAlign.End,
                         text = "Status: ${it}",

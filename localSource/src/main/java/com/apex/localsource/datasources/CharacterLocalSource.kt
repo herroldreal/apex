@@ -1,10 +1,8 @@
 package com.apex.localsource.datasources
 
-import com.apex.localsource.AppDatabase
+import com.apex.localsource.daos.CharacterDao
 
-class CharacterLocalSource(database: AppDatabase) {
+class CharacterLocalSource(private val characterDao: CharacterDao) {
 
-    private val characterDao = database.characterDao()
-
-    fun getCharacter(characterId: Int) = characterDao.getCharacter(characterId)
+    fun getCharacter(characterId: Int?) = characterDao.getCharacter(characterId)
 }

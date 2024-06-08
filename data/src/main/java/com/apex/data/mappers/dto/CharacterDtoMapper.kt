@@ -5,7 +5,7 @@ import com.apex.remotesource.dto.CharacterDto
 
 fun CharacterDto.toBO() : CharacterBO {
     return CharacterBO(
-        id = id,
+        characterId = id,
         name = name,
         status = status,
         species = species,

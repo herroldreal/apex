@@ -1,28 +1,31 @@
 package com.apex.localsource.di
 
-import android.content.Context
 import androidx.annotation.VisibleForTesting
-import androidx.room.Room
-import com.apex.localsource.AppDatabase
 import com.apex.localsource.Constants
+import com.apex.localsource.daos.CharacterDao
 import com.apex.localsource.datasources.CharacterLocalSource
-import org.koin.android.ext.koin.androidContext
+import com.apex.localsource.entitites.CharacterEntity
+import io.realm.kotlin.Realm
+import io.realm.kotlin.RealmConfiguration
 import org.koin.dsl.module
 
 @VisibleForTesting
 val DATABASE_NAME = Constants.DB_NAME
 
-fun provideDatabase(appContext: Context): AppDatabase =
-    Room.databaseBuilder(
-        appContext,
-        AppDatabase::class.java,
-        DATABASE_NAME,
-    ).fallbackToDestructiveMigration()
-        .allowMainThreadQueries()
-        .addMigrations()
+fun provideDatabase(): Realm {
+    val schemas = setOf(
+        CharacterEntity::class
+    )
+    val config = RealmConfiguration.Builder(schemas)
+        .name("apex.realm")
+        .deleteRealmIfMigrationNeeded()
         .build()
 
+    return Realm.open(config)
+}
+
 val localSourceModule = module {
-    single { provideDatabase(androidContext()) }
+    single { provideDatabase() }
     single { CharacterLocalSource(get()) }
+    single { CharacterDao(get()) }
 }
