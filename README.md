@@ -33,7 +33,7 @@ architecture.
 
 ## Open API
 
-Rick And Morty using [Rick And Mory API](https://rickandmortyapi.com/)
+Rick And Morty using [Rick And Morty API](https://rickandmortyapi.com/)
 
 # Purpose of the project
 

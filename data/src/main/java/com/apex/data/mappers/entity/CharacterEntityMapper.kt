@@ -5,7 +5,7 @@ import com.apex.localsource.entitites.CharacterEntity
 
 fun CharacterEntity.toPagingBO(): CharacterBO {
     return CharacterBO(
-        id,
+        characterId,
         name,
         status,
         species,

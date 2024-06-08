@@ -17,7 +17,7 @@ class MainCoordinator(
         viewModel.fetchAllCharacters()
     }
 
-    fun onCharacterClicked(characterId: Int) {
+    fun onCharacterClicked(characterId: Int?) {
         viewModel.showCharacterDetail(characterId)
     }
 }

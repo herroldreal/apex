@@ -1,24 +1,40 @@
 package com.apex.localsource.daos
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import com.apex.localsource.datasources.CharacterPagingSource
 import com.apex.localsource.entitites.CharacterEntity
+import com.apex.localsource.extensions.toSingleFlow
+import io.realm.kotlin.Realm
+import io.realm.kotlin.UpdatePolicy
+import io.realm.kotlin.ext.query
+import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.flow.Flow
 
-@Dao
-interface CharacterDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addCharacters(characters: List<CharacterEntity>)
+class CharacterDao(
+    private val realm: Realm
+) {
+    suspend fun addCharacters(character: CharacterEntity) {
+        realm.write {
+            copyToRealm(character, UpdatePolicy.ALL)
+        }
+    }
 
-    @Query("SELECT * FROM characters")
-    fun getAllCharacters(): PagingSource<Int, CharacterEntity>
+    fun getAllCharacters(): PagingSource<Int, CharacterEntity> {
+        return CharacterPagingSource(realm)
+    }
 
-    @Query("SELECT * FROM characters WHERE id = :characterId")
-    fun getCharacter(characterId: Int): Flow<CharacterEntity>
+    fun getCharacter(characterId: Int?): Flow<CharacterEntity?> {
+        val query = realm.query<CharacterEntity>("characterId == $0", characterId)
+            .sort("name", Sort.ASCENDING)
+            .find()
 
-    @Query("DELETE FROM characters")
-    suspend fun deleteAllCharacters()
+        return query.toSingleFlow()
+    }
+
+    suspend fun deleteAllCharacters() {
+        realm.write {
+            val characters = query<CharacterEntity>().find()
+            delete(characters)
+        }
+    }
 }

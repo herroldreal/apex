@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 class DetailCharacterUseCase(
     private val characterRepository: ICharacterRepository,
-): UseCase<Int, Flow<CharacterBO>>() {
-    override suspend fun useCaseFunction(input: Int): Flow<CharacterBO> {
+): UseCase<Int?, Flow<CharacterBO>>() {
+    override suspend fun useCaseFunction(input: Int?): Flow<CharacterBO> {
         return characterRepository.characterDetail(input)
     }
 }

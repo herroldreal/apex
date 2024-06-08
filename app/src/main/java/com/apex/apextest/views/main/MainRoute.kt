@@ -25,6 +25,7 @@ fun rememberMainActions(coordinator: MainCoordinator): MainActions {
     return remember(coordinator) {
         MainActions(
             onClick = coordinator::onCharacterClicked,
+            toCharacterDetail = coordinator::onCharacterClicked
         )
     }
 }

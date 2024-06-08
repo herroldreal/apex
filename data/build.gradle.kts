@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
+    id(libs.plugins.realm.get().pluginId)
 }
 
 android {
@@ -37,6 +38,9 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":localSource"))
     implementation(project(":remoteSource"))
+
+    // Realm
+    implementation(libs.realm.base)
 
     // Koin
     runtimeOnly(libs.koin.core)

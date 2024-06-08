@@ -16,8 +16,10 @@ fun Flow<PagingData<CharacterEntity>>.toPagingBO(): Flow<PagingData<CharacterBO>
     }
 }
 
-fun Flow<CharacterEntity>.toBO() : Flow<CharacterBO> {
+fun Flow<CharacterEntity?>.toBO(): Flow<CharacterBO> {
     return transform { value ->
-        emit(value.toPagingBO())
+        value?.let {
+            emit(it.toPagingBO())
+        }
     }
 }

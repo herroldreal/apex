@@ -47,5 +47,5 @@ val remoteSourceModule = module {
     single { provideRetrofit(get(), get()) }
     single { provideApiClient(get()) }
 
-    single { CharacterRemoteSource(get(), get()) }
+    single { CharacterRemoteSource(get(), get(), get()) }
 }

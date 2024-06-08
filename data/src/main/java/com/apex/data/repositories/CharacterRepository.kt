@@ -18,7 +18,7 @@ class CharacterRepository(
         return characterRemoteSource.getCharacters().toPagingBO()
     }
 
-    override suspend fun characterDetail(id: Int): Flow<CharacterBO> {
+    override suspend fun characterDetail(id: Int?): Flow<CharacterBO> {
         return characterLocalSource.getCharacter(id).toBO()
     }
 }

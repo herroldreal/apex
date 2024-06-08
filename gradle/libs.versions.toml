@@ -1,32 +1,29 @@
 [versions]
-agp = "8.2.0-rc03"
+agp = "8.4.1"
 ksp = "1.9.10-1.0.13"
 kotlin = "1.9.10"
-core-ktx = "1.12.0"
-activity-compose = "1.8.0"
-compose-bom = "2023.10.01"
+core-ktx = "1.13.1"
+activity-compose = "1.9.0"
+compose-bom = "2024.05.00"
+realm = "1.16.0"
 retrofit = "2.9.0"
 moshi = "1.15.0"
 okhttp = "4.12.0"
-room = "2.6.0"
-navigation-compose = "2.7.5"
+room = "2.6.1"
+navigation-compose = "2.7.7"
 coil = "2.5.0"
 org-jetbrains-kotlin-jvm = "1.9.10"
 kotlinxCoroutines = "1.7.3"
 timber = "5.0.1"
-androidxLifecycle = "2.6.2"
-paging3 = "3.2.1"
-material = "1.10.0"
-material-compose = "1.5.4"
-androidx-appcompat = "1.6.1"
+androidxLifecycle = "2.8.1"
+paging3 = "3.3.0"
+material = "1.12.0"
+material-compose = "1.6.7"
+androidx-appcompat = "1.7.0"
 koin = "3.5.0"
 koin-compose = "1.1.0"
 accompanist = "0.32.0"
 lottie = "6.1.0"
-roomKtx = "2.6.0"
-junit = "4.13.2"
-androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
@@ -76,7 +73,8 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 
 # Android Paging
 androidx-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging3" }
-androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version = "3.2.1" }
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version = "3.3.0" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version = "3.3.0" }
 androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging3" }
 
 # Image Loader
@@ -94,8 +92,13 @@ ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 
+# Realm
+realm-base = { group = "io.realm.kotlin", name = "library-base", version.ref = "realm" }
+realm-sync = { group = "io.realm.kotlin", name = "library-sync", version.ref = "realm" }
+
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+realm = { id = "io.realm.kotlin", version.ref = "realm" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
