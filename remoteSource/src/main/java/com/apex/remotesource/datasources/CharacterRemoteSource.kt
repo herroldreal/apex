@@ -5,9 +5,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.apex.localsource.daos.CharacterDao
-import com.apex.localsource.datasources.CharacterPagingSource
 import com.apex.localsource.entitites.CharacterEntity
 import com.apex.remotesource.api.APIService
+import com.apex.remotesource.paging.CharacterRemoteMediator
 import io.realm.kotlin.Realm
 import kotlinx.coroutines.flow.Flow
 
@@ -20,10 +20,12 @@ class CharacterRemoteSource(
     fun getCharacters(): Flow<PagingData<CharacterEntity>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 30,
+                pageSize = 20,
+                prefetchDistance = 3,
+                enablePlaceholders = false
             ),
-            //remoteMediator = CharacterRemoteMediator(apiService, characterDao),
-            pagingSourceFactory = { CharacterPagingSource(realm) }
+            remoteMediator = CharacterRemoteMediator(apiService, characterDao),
+            pagingSourceFactory = { characterDao.getAllCharacters() }
         ).flow
     }
 }

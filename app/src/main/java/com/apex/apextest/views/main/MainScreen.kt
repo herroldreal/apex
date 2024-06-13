@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,14 +47,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
-import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import coil.compose.rememberAsyncImagePainter
 import com.apex.apextest.extensions.toast
 import com.apex.domain.models.CharacterBO
-import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,7 +104,7 @@ fun MainScreen(
                     )
                 },
                 content = { padding ->
-                    val pagingData = state.characters
+                    val pagingData = state.characters.collectAsLazyPagingItems()
                     LazyCharactersList(padding, pagingData, actions)
                 }
             )
@@ -117,52 +118,83 @@ fun MainScreen(
 
 @Composable
 fun LazyCharactersList(
-    paddingValues: PaddingValues,
-    characters: Flow<PagingData<CharacterBO>>,
+    padding: PaddingValues,
+    characters: LazyPagingItems<CharacterBO>,
     actions: MainActions
 ) {
-    val lazyPagingItems = characters.collectAsLazyPagingItems()
-
-    when (lazyPagingItems.loadState.refresh) {
-        LoadState.Loading -> {
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-                    .background(Color.Transparent),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = padding,
+    ) {
+        items(
+            count = characters.itemCount,
+            key = characters.itemKey { it.characterId ?: 0 },
+            contentType = characters.itemContentType { "Character ${it.characterId}" }
+        ) { index ->
+            val character: CharacterBO = characters[index] ?: return@items
+            CharacterItem(character = character, actions = actions)
         }
 
-        is LoadState.Error -> {
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-                    .background(Color.Transparent),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "Error")
-            }
-        }
+        characters.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    // Show loading indicator at the start
+                    item { LoadingIndicator(padding) }
+                }
 
-        else -> {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = paddingValues,
-                content = {
-                    items(
-                        count = lazyPagingItems.itemCount,
-                        key = lazyPagingItems.itemKey { it.characterId ?: 0 },
-                        contentType = lazyPagingItems.itemContentType { "Characters ${it.characterId}" },
-                    ) { index: Int ->
-                        val character: CharacterBO = lazyPagingItems[index] ?: return@items
-                        CharacterItem(character, actions)
+                loadState.append is LoadState.Loading -> {
+                    // Show loading indicator at the end
+                    item { LoadingIndicator(padding) }
+                }
+
+                loadState.refresh is LoadState.Error -> {
+                    // Show error message if refresh fails
+                    val error = loadState.refresh as LoadState.Error
+                    item {
+                        ErrorItem(
+                            padding,
+                            message = error.error.localizedMessage ?: "Error"
+                        ) { retry() }
                     }
                 }
-            )
+
+                loadState.append is LoadState.Error -> {
+                    // Show error message if append fails
+                    val error = loadState.append as LoadState.Error
+                    item {
+                        ErrorItem(
+                            padding,
+                            message = error.error.localizedMessage ?: "Error"
+                        ) { retry() }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingIndicator(padding: PaddingValues) {
+    CircularProgressIndicator(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+    )
+}
+
+@Composable
+fun ErrorItem(padding: PaddingValues, message: String, onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+    ) {
+        Text(text = message, color = Color.Red)
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = onRetry) {
+            Text("Retry")
         }
     }
 }
@@ -275,7 +307,6 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
 }
 
 @Composable
-
 @Preview(name = "Main")
 private fun MainScreenPreview() {
     CharacterItem(

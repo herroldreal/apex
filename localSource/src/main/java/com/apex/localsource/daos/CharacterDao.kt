@@ -7,7 +7,6 @@ import com.apex.localsource.extensions.toSingleFlow
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
-import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.flow.Flow
 
 class CharacterDao(
@@ -25,7 +24,6 @@ class CharacterDao(
 
     fun getCharacter(characterId: Int?): Flow<CharacterEntity?> {
         val query = realm.query<CharacterEntity>("characterId == $0", characterId)
-            .sort("name", Sort.ASCENDING)
             .find()
 
         return query.toSingleFlow()
