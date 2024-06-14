@@ -12,9 +12,11 @@ import kotlinx.coroutines.flow.Flow
 class CharacterDao(
     private val realm: Realm
 ) {
-    suspend fun addCharacters(character: CharacterEntity) {
+    suspend fun insertAll(character: List<CharacterEntity>) {
         realm.write {
-            copyToRealm(character, UpdatePolicy.ALL)
+            character.forEach {
+                copyToRealm(it, UpdatePolicy.ALL)
+            }
         }
     }
 
@@ -23,10 +25,8 @@ class CharacterDao(
     }
 
     fun getCharacter(characterId: Int?): Flow<CharacterEntity?> {
-        val query = realm.query<CharacterEntity>("characterId == $0", characterId)
-            .find()
-
-        return query.toSingleFlow()
+        return realm.query<CharacterEntity>("id == $0", characterId)
+            .find().toSingleFlow()
     }
 
     suspend fun deleteAllCharacters() {

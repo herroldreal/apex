@@ -128,8 +128,8 @@ fun LazyCharactersList(
     ) {
         items(
             count = characters.itemCount,
-            key = characters.itemKey { it.characterId ?: 0 },
-            contentType = characters.itemContentType { "Character ${it.characterId}" }
+            key = characters.itemKey { it.id ?: 0 },
+            contentType = characters.itemContentType { "Character ${it.id}" }
         ) { index ->
             val character: CharacterBO = characters[index] ?: return@items
             CharacterItem(character = character, actions = actions)
@@ -221,7 +221,7 @@ fun CharacterItem(character: CharacterBO, actions: MainActions) {
                 .height(IntrinsicSize.Max)
                 .fillMaxWidth()
                 .clickable {
-                    actions.toCharacterDetail(character.characterId)
+                    actions.toCharacterDetail(character.id)
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -1,10 +1,11 @@
-package com.apex.localsource.datasources;
+package com.apex.localsource.datasources
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apex.localsource.entitites.CharacterEntity
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.query.Sort
 
 class CharacterPagingSource(
     private val realm: Realm
@@ -12,8 +13,8 @@ class CharacterPagingSource(
 
     override fun getRefreshKey(state: PagingState<Int, CharacterEntity>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
 
@@ -23,15 +24,19 @@ class CharacterPagingSource(
             val pageSize = params.loadSize
 
             val data = realm.query<CharacterEntity>()
-                .distinct("characterId")
+                .sort("id", Sort.ASCENDING)
                 .find()
                 .drop((page - 1) * pageSize)
                 .take(pageSize)
+                .toList()
+
+            val prevKey = if (page == 1) null else page - 1
+            val nextKey = if (data.isEmpty()) null else page + 1
 
             LoadResult.Page(
                 data = data,
-                prevKey = if (page == 1) null else page - 1,
-                nextKey = if (data.size < pageSize) null else page + 1
+                prevKey = prevKey,
+                nextKey = nextKey
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
